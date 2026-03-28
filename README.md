@@ -17,6 +17,24 @@ TinyWorld maps the connections between people so you can find out just how many 
 - **Find the path** between two people (Kevin Bacon style, but make it romantic and/or horrifying)
 - **Browse connection history** so you can revisit your previous existential discoveries
 
+### Dual-Agent Search with Live Browser Streams
+
+Two AI agents search simultaneously — each with its own stealth browser you can watch in real time.
+
+![Dual agent search with live browser streams and person profiles](public/search_both.png)
+
+### Knowledge Graph Explorer
+
+Click any two people in the graph to instantly find the shortest path between them. Nodes are color-coded: people, companies, schools, teams, events, and locations.
+
+![Interactive knowledge graph with path finding between Paul Graham and Yann LeCun](public/people_graph.png)
+
+### Live Graph Building + Connection Discovery
+
+Watch the knowledge graph build in real time as agents discover entities. The connection discovery engine chains TinyFish searches to find co-mentions, shared organizations, and events.
+
+![Live knowledge graph and connection discovery engine streaming logs](public/knowledge_graph.png)
+
 ---
 
 ## How it actually finds stuff
@@ -76,4 +94,3 @@ TinyWorld is not responsible for:
 - Accidental family reunions
 - The realization that your entire social circle went to the same three colleges
 - Any feelings of "wait, we've met before"
-
