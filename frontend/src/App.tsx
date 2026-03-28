@@ -5,6 +5,7 @@ import ConnectionPage from "./pages/ConnectionPage";
 import ProfilePage from "./pages/ProfilePage";
 import SearchPage from "./pages/SearchPage";
 import HistoryPage from "./pages/HistoryPage";
+import GraphPage from "./pages/GraphPage";
 
 export default function App() {
   const location = useLocation();
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/" element={null} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/history" element={<HistoryPage />} />
+        <Route path="/graph" element={<GraphPage />} />
         <Route path="/profile/:id" element={<ProfilePage />} />
       </Route>
     </Routes>

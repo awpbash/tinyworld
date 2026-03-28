@@ -1,8 +1,9 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Globe, Search, Radar, History, Share2 } from "lucide-react";
+import { Globe, Search, Radar, History, Network, Share2 } from "lucide-react";
 
 const links = [
   { to: "/", label: "Investigate", icon: Radar },
+  { to: "/graph", label: "Graph", icon: Network },
   { to: "/history", label: "History", icon: History },
   { to: "/search", label: "Search", icon: Search },
 ];

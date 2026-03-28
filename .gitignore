@@ -7,8 +7,6 @@ __pycache__/
 *.pyc
 *.pyo
 *.egg-info/
-*.db
-*.sqlite3
 
 # Node
 node_modules/

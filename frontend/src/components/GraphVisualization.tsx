@@ -180,22 +180,25 @@ export default function GraphVisualization({
   useEffect(() => {
     const fg = fgRef.current;
     if (!fg) return;
-    // Stronger repulsion so nodes spread out
-    fg.d3Force("charge")?.strength(-300).distanceMax(400);
-    // Longer links so labels don't overlap
+    const nodeCount = data.nodes.length;
+
+    // Scale forces based on graph size
+    const charge = nodeCount > 30 ? -400 : nodeCount > 15 ? -300 : -200;
+    const maxDist = nodeCount > 30 ? 600 : 400;
+    const linkDistPP = nodeCount > 30 ? 160 : 120;
+    const linkDistPE = nodeCount > 30 ? 100 : 70;
+
+    fg.d3Force("charge")?.strength(charge).distanceMax(maxDist);
     fg.d3Force("link")?.distance((link: any) => {
       const s = typeof link.source === "object" ? link.source : null;
       const t = typeof link.target === "object" ? link.target : null;
-      // Longer distance for person-to-person, shorter for person-to-entity
-      if (s?.node_type === "person" && t?.node_type === "person") return 120;
-      return 80;
+      if (s?.node_type === "person" && t?.node_type === "person") return linkDistPP;
+      return linkDistPE;
     });
-    // Center force
     fg.d3Force("center")?.strength(0.05);
-    // Reheat so new forces take effect
+
     fg.d3ReheatSimulation();
-    // Auto zoom-to-fit after simulation settles
-    setTimeout(() => fg.zoomToFit(600, 60), 2000);
+    setTimeout(() => fg.zoomToFit(600, 60), 2500);
   }, [data]);
 
   // Enrich nodes with colors
@@ -248,20 +251,23 @@ export default function GraphVisualization({
       ctx.lineWidth = isHighlighted || isHovered ? 2 : 0.5;
       ctx.stroke();
 
-      // Label
-      const fontSize = Math.max(10, 12 / globalScale);
-      const fontStyle = entity ? "italic " : "";
-      ctx.font = `${fontStyle}${isHighlighted ? "bold " : ""}${fontSize}px Inter, sans-serif`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "top";
-      ctx.fillStyle = isHighlighted
-        ? "#06b6d4"
-        : isHovered
-        ? "#e2e8f0"
-        : entity
-        ? "rgba(226, 232, 240, 0.55)"
-        : "rgba(226, 232, 240, 0.7)";
-      ctx.fillText(node.name, node.x, node.y + r + 3);
+      // Label — only show when zoomed in enough or node is highlighted/hovered
+      const showLabel = globalScale > 0.8 || isHighlighted || isHovered;
+      if (showLabel) {
+        const fontSize = Math.max(10, 12 / globalScale);
+        const fontStyle = entity ? "italic " : "";
+        ctx.font = `${fontStyle}${isHighlighted ? "bold " : ""}${fontSize}px Inter, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = isHighlighted
+          ? "#06b6d4"
+          : isHovered
+          ? "#e2e8f0"
+          : entity
+          ? "rgba(226, 232, 240, 0.35)"
+          : "rgba(226, 232, 240, 0.55)";
+        ctx.fillText(node.name, node.x, node.y + r + 3);
+      }
     },
     [hoverNode, highlightSet]
   );
@@ -332,11 +338,16 @@ export default function GraphVisualization({
         linkCanvasObject={paintLink}
         onNodeClick={handleNodeClick}
         onNodeHover={(node: any) => setHoverNode(node)}
+        onNodeDragEnd={(node: any) => {
+          // Pin dragged node in place
+          node.fx = node.x;
+          node.fy = node.y;
+        }}
         cooldownTicks={200}
-        cooldownTime={3000}
-        d3AlphaDecay={0.05}
-        d3VelocityDecay={0.6}
-        warmupTicks={100}
+        cooldownTime={4000}
+        d3AlphaDecay={0.04}
+        d3VelocityDecay={0.5}
+        warmupTicks={80}
         enableZoomInteraction={true}
         enablePanInteraction={true}
         minZoom={0.5}
